@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>E NOIS MANO</title>
+
+  <script type="text/javascript" src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+  <script type="text/javascript">
+  $( document ).ready(function() {
+    $.ajax({
+      method: "GET",
+      url: "http://localhost:4000/banner/4"
+  }).done(function( data ) {
+      $( "#banner-titulo" ).append( data[0].titulo );
+      $( "#banner-subtitulo" ).append( data[0].subtitulo );
+    });
+
+    $("#enviar").click(function(){
+      var titulo = $("#titulo").val();
+      var subtitulo = $("#subtitulo").val();
+
+      if(titulo != "" && subtitulo != "") {
+        $.ajax({
+          method: "POST",
+          data: {'titulo': titulo, 'subtitulo': subtitulo},
+          url: "http://localhost:4000/inserir/banner"
+        }).done(function( data ) {
+          var id = data.insertId;
+          if(id) {
+            $("#banner-titulo").html("");
+            $("#banner-subtitulo").html("");
+            $.ajax({
+              method: "GET",
+              url: "http://localhost:4000/banner/" + id
+          }).done(function( data ) {
+              $( "#banner-titulo" ).append( data[0].titulo );
+              $( "#banner-subtitulo" ).append( data[0].subtitulo );
+            });
+          }
+        });
+      } else {
+        alert('BARRADO NO BAILE');
+      }
+    });
+
+  });
+
+  </script>
+</head>
+<body>
+  <div id="banner">
+    <div id="banner-titulo"></div>
+    <div id="banner-subtitulo"></div>
+  </div>
+  <br />
+  <div id="cadastrarBanner">
+    <input type="text" id="titulo" type="text" />
+    <br />
+    <input type="text" id="subtitulo" type="text" />
+    <br />
+    <input value="ENVIAR" type="button" id="enviar" />
+  </div>
+</body>
+</html>
